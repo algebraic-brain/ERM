@@ -1,0 +1,67 @@
+fmod ERM is  
+    sort Erm .
+
+    op __ : Erm Erm -> Erm [gather (E e)] .
+    op _**_ : Erm Erm -> Erm [gather (E e)] .
+    op _&&_ : Erm Erm -> Erm [gather (E e)] .
+
+    *** del, dup, swap, apply, assoc, unassoc, eq, id, null
+
+    op delC : -> Erm .  
+    op dupC : -> Erm .  
+    op swapC : -> Erm .  
+    op applyC : -> Erm .  
+    op assocC : -> Erm .  
+    op unassocC : -> Erm .  
+    op eqC : -> Erm .  
+    op idC : -> Erm .  
+    op nullC : -> Erm .  
+
+    vars A B C D : Erm .  
+
+    eq delC A = idC .
+    eq nullC A = nullC .
+    eq A nullC = nullC .
+    eq (A ** B) C = A (B C) .
+    eq (A && B) (C && D) = (A C) && (B D) .
+    eq idC A = A .
+    eq A idC = A .
+    eq dupC A = A && A .
+    eq swapC (A && B) = B && A .
+    eq applyC (A && B) = A B .
+    eq assocC ((A && B) && C) = A && (B && C) .
+    eq unassocC (A && (B && C)) = (A && B) && C .
+
+    op trueC : -> Erm .  
+    op falseC : -> Erm .  
+    op selectC : -> Erm .  
+
+    eq trueC = applyC ** (idC && delC) .    
+    eq falseC = applyC ** (delC && idC) .
+    eq selectC = applyC ** (idC && (idC && nullC)) .
+
+endfm
+
+fmod ERM-ATOMIC is
+
+    pr ERM .
+
+    op SelC : -> Erm .
+
+    var F : Erm .
+    eq SelC F = selectC ** (F && idC) ** (idC && dupC) ** dupC .
+
+endfm
+
+fmod ERM-ATOMIC-SAMPLE is
+
+    pr ERM-ATOMIC .
+
+    op fC : -> Erm .  
+    op gC : -> Erm .  
+    op aC : -> Erm .  
+
+    eq fC aC = trueC .
+    eq gC aC = falseC .
+
+endfm
