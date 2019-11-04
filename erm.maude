@@ -47,9 +47,12 @@ fmod ERM-ATOMIC is
     pr ERM .
 
     op SelC : -> Erm .
+    op PropC : -> Erm .
 
-    var F : Erm .
-    eq SelC F = selectC ** (F && idC) ** (idC && dupC) ** dupC .
+    var A B F : Erm .
+
+    eq SelC F = selectC ** (F  && dupC) ** dupC .
+    eq PropC A B = eqC ** (applyC && idC) ** (idC && (A ** delC) && idC) ** (dupC && (B ** delC)) ** dupC . 
 
 endfm
 
@@ -60,8 +63,14 @@ fmod ERM-ATOMIC-SAMPLE is
     op fC : -> Erm .  
     op gC : -> Erm .  
     op aC : -> Erm .  
+    op bC : -> Erm .  
+    op cC : -> Erm .  
+    op dC : -> Erm .  
 
     eq fC aC = trueC .
     eq gC aC = falseC .
+
+    eq eqC ((fC bC) && dC) = trueC .
+    eq eqC ((fC cC) && dC) = falseC .
 
 endfm
